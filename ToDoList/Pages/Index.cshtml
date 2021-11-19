@@ -1,10 +1,60 @@
 ﻿@page
-@model IndexModel
-@{
-    ViewData["Title"] = "Home page";
-}
+@model ToDoList.Pages.IndexModel
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ToDoTable[0].Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ToDoTable[0].Description)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.ToDoTable[0].Date)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.ToDoTable) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                <a class="btn btn-primary" asp-route-id="@item.Id">Edit</a> |
+                <a class="btn btn-danger" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<div class="row">
+    <div class="col-md-10">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="form-group col-6">
+                    <label class="control-label"> <b>ADD</b></label>
+                    <input placeholder="Description" asp-for="objToDoTable.Description" class="form-control" />
+                    <span asp-validation-for="objToDoTable.Description" class="text-danger"></span>
+                </div>
+                <div class="form-group set-submit-button col-6">
+                    <input type="submit" value="Create" class="btn btn-success" />
+                </div>
+               </div>
+        </form>
+    </div>
 </div>

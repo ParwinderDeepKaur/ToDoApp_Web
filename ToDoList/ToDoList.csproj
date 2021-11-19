@@ -5,6 +5,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\Create.cshtml.cs" />
+    <Compile Remove="Pages\Delete.cshtml.cs" />
+    <Compile Remove="Pages\Details.cshtml.cs" />
+    <Compile Remove="Pages\Edit.cshtml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Pages\Create.cshtml" />
+    <Content Remove="Pages\Delete.cshtml" />
+    <Content Remove="Pages\Details.cshtml" />
+    <Content Remove="Pages\Edit.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.21">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

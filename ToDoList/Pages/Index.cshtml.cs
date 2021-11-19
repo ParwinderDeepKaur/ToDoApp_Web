@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using ToDoList.Data;
 using ToDoList.Model;
 
@@ -12,34 +12,45 @@ namespace ToDoList.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        private readonly ToDoDBContext _context;
 
-        private readonly ToDoDBContext _dBContext;
-
-        public IndexModel(ILogger<IndexModel> logger, 
-            ToDoDBContext dBContext)
+        public IndexModel(ToDoDBContext context)
         {
-            _logger = logger;
-            this._dBContext = dBContext;
+            _context = context;
         }
 
+
+        public IList<ToDoTable> ToDoTable { get;set; }
+        [BindProperty]
+        public ToDoTable objToDoTable { get; set; }
+
         /// <summary>
-        /// Get List Of Todo record
+        /// get todo list
         /// </summary>
-        public void OnGet()
+        /// <returns></returns>
+        public async Task OnGetAsync()
         {
+            ToDoTable = await _context.ToDoLists.ToListAsync();
+        }
 
-           // Test DB table 
-           //Insert demo record 
-            _dBContext.Add(new ToDoTable
+  
+        /// <summary>
+        /// Add todo record 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (!ModelState.IsValid)
             {
-                Description = "Testing.",
-                Status = false,
-                Date = new DateTime()
-            });
+                return Page();
+            }
+            
+            objToDoTable.Date = DateTime.UtcNow;
+            _context.ToDoLists.Add(objToDoTable);
+            // Save todo record
+            await _context.SaveChangesAsync();
 
-            _dBContext.SaveChanges();
-
+            return RedirectToPage("./Index");
         }
     }
 }
