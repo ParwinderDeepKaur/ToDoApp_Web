@@ -1,8 +1,6 @@
 ﻿@page
 @model ToDoList.Pages.IndexModel
 
-
-
 <table class="table">
     <thead>
         <tr>
@@ -20,41 +18,131 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.ToDoTable) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
+        @foreach (var item in Model.ToDoTable)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
 
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                <a class="btn btn-primary" asp-route-id="@item.Id">Edit</a> |
-                <a class="btn btn-danger" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    <div class="row">
+                        <div class="col-2">    <button class="btn btn-primary" name="id" onclick="EditTodo('@item.Id')" type="button" value="@item.Id">Edit</button></div>
+                        <div class="col-2">
+                            <form method="post" asp-page-handler="Delete">
+                                <button class="btn btn-danger" name="id" type="submit" value="@item.Id">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
 <div class="row">
-    <div class="col-md-10">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="col-md-6">
+        <form method="post" id="Create">
+            <div class="create-validation text-danger"></div>
             <div class="row">
-                <div class="form-group col-6">
+                <div class="form-group col-12">
                     <label class="control-label"> <b>ADD</b></label>
-                    <input placeholder="Description" asp-for="objToDoTable.Description" class="form-control" />
-                    <span asp-validation-for="objToDoTable.Description" class="text-danger"></span>
+                    <input placeholder="Description" asp-for="objToDoTable.Description" class="form-control create-description" />
+
+                </div>
+                <div class="form-group col-12">
+                    <input placeholder="Select date" asp-for="objToDoTable.Date" class="form-control create-date" />
+                </div>
+                <div class="form-group form-check col-12 set-status">
+                    <label class="form-check-label">
+                        <input class="form-check-input create-status" asp-for="objToDoTable.Status" />  <label> Status</label>
+                    </label>
                 </div>
                 <div class="form-group set-submit-button col-6">
-                    <input type="submit" value="Create" class="btn btn-success" />
+                    <input onclick="CreateForm()" type="button" value="Create" class="btn btn-success" />
                 </div>
-               </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <form method="post" id="Edit" asp-page-handler="Edit">
+            <input type="hidden" class="editId" asp-for="objToDoTable.Id" />
+            <div class="edit-validation text-danger"></div>
+            <div class="row">
+                <div class="form-group col-12">
+                    <label class="control-label"> <b>EDIT</b></label>
+                    <input placeholder="Description" asp-for="objToDoTable.Description" class="form-control description" />
+
+                </div>
+
+                <div class="form-group col-12">
+                    <input placeholder="Select date" asp-for="objToDoTable.Date" class="form-control date" />
+                </div>
+
+                <div class="form-group col-12 form-check set-status">
+                    <label class="form-check-label">
+                        <input class="form-check-input status" asp-for="objToDoTable.Status" /> <label> Status</label>
+                    </label>
+                </div>
+                <div class="form-group set-submit-button col-6">
+                    <input onclick="EditForm()" type="button" id="edit-button" value="Update" class="btn btn-success" />
+                </div>
+            </div>
         </form>
     </div>
 </div>
+
+
+
+
+<script>
+    function EditTodo(value) {
+
+        $.ajax({
+            url: '/?handler=Edit',
+            data: {
+                id: value
+            }
+        })
+            .done(function (result) {
+                debugger;
+                $('.editId').val(result.id);
+                $('.date').val(result.date);
+                $('.description').val(result.description);
+                $('.status').prop('checked', result.status);
+            });
+    }
+
+
+    function CreateForm() {
+  
+        if ($.trim($(".create-description").val()) && $.trim($(".create-date").val()) && $(".create-status").val()) {
+            $("#Create").submit();
+        }
+        else {
+            $(".create-validation").empty();
+            $(".create-validation").append("Please fill all the fields");
+        }
+    }
+
+    function EditForm() {
+
+            if ($.trim($(".description").val()) && $.trim($(".date").val()) && $(".status").val()) {
+                $("#Edit").submit();
+            }
+            else {
+                $(".edit-validation").empty();
+                $(".edit-validation").append("Please fill all the fields");
+            }
+    }
+
+
+</script>

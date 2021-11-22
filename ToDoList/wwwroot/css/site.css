@@ -19,6 +19,9 @@ a {
 .set-submit-button {
     margin-top: 30px !important;
 }
+.set-status {
+    margin-left: 17px !important;
+}
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
   color: #fff;
